@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Water Reminder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3b82f6">
+</head>
+  <body>
+    <div class="page-bg" aria-hidden="true">
+      <div class="wave wave1"></div>
+      <div class="wave wave2"></div>
+    </div>
+
+    <main class="container">
+      <header class="header">
+        <div class="logo-icon">💧</div>
+        <h1>Water Reminder</h1>
+        <p class="tagline">Stay hydrated, stay healthy</p>
+      </header>
+
+      <!-- Progress Section -->
+      <section class="card progress-card">
+        <div class="progress-ring-wrap">
+          <svg class="progress-ring" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <circle class="ring-bg" cx="80" cy="80" r="64" />
+            <circle class="ring-fill" id="ringFill" cx="80" cy="80" r="64" />
+          </svg>
+          <div class="ring-center">
+            <span class="count-display" id="countDisplay">0</span>
+            <span class="goal-label" id="goalLabel">/ 8</span>
+            <span class="unit-label">glasses</span>
+          </div>
+        </div>
+
+        <p class="progress-text" id="progressText">Keep going! 0 of 8 glasses today.</p>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="drankBtn">
+            <span class="btn-icon">💧</span> Drank
+          </button>
+          <button class="btn btn-secondary" id="skipBtn">
+            <span class="btn-icon">⏭</span> Skip
+          </button>
+        </div>
+
+        <button class="btn btn-reset" id="resetBtn">Reset Day</button>
+      </section>
+
+      <!-- Goal Settings -->
+      <section class="card settings-card">
+        <h2 class="card-title">Daily Goal</h2>
+        <div class="goal-control">
+          <button class="stepper-btn" id="goalMinus" aria-label="Decrease goal">−</button>
+          <div class="goal-value">
+            <span id="goalDisplay">8</span>
+            <span class="unit">glasses</span>
+          </div>
+          <button class="stepper-btn" id="goalPlus" aria-label="Increase goal">+</button>
+        </div>
+      </section>
+
+      <!-- Reminder Settings -->
+      <section class="card settings-card">
+        <h2 class="card-title">Reminder Interval</h2>
+        <div class="interval-grid">
+          <button class="interval-btn" data-minutes="30">30 min</button>
+          <button class="interval-btn" data-minutes="60">1 hour</button>
+          <button class="interval-btn" data-minutes="90">1.5 hrs</button>
+          <button class="interval-btn" data-minutes="120">2 hours</button>
+        </div>
+        <div class="custom-interval">
+          <label for="customMinutes">Custom interval (minutes)</label>
+          <div class="custom-row">
+            <input type="number" id="customMinutes" min="1" max="480" placeholder="e.g. 45" />
+            <button class="btn btn-outline" id="setCustomBtn">Set</button>
+          </div>
+        </div>
+        <div class="reminder-status" id="reminderStatus">No reminder active</div>
+        <div class="reminder-controls">
+          <button class="btn btn-primary" id="startReminder">Start Reminders</button>
+          <button class="btn btn-ghost" id="stopReminder">Stop</button>
+        </div>
+      </section>
+
+      <!-- Notification Permission -->
+      <section class="card notif-card" id="notifCard">
+        <div class="notif-icon">🔔</div>
+        <p>Enable browser notifications to get reminders even when this tab is in the background.</p>
+        <button class="btn btn-outline" id="enableNotifBtn">Enable Notifications</button>
+        <span class="notif-granted hidden" id="notifGranted">Notifications enabled ✓</span>
+      </section>
+    </main>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/main.js"></script>
+      <!-- <script type="module">
+      
+        console.log("SCRIPT STARTED");
+        const btn = document.getElementById("enableNotifBtn");
+        import { getFirestore, doc, setDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(app);
+async function saveUserData(token, interval) {
+  await setDoc(doc(db, "users", token), {
+    token: token,
+    reminderInterval: interval || 60,
+    lastSent: Date.now()
+  });
+
+  console.log("Saved in Firestore");
+}
+
+btn.addEventListener("click", () => {
+  console.log("BUTTON CLICKED");
+  enableNotif();
+});
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAiJxYG4HmC1TLRYStZcZEOB7m7K_Mlplk",
+  authDomain: "water-reminder-app-32e12.firebaseapp.com",
+  projectId: "water-reminder-app-32e12",
+  storageBucket: "water-reminder-app-32e12.firebasestorage.app",
+  messagingSenderId: "44891369860",
+  appId: "1:44891369860:web:14f1019ab6a4a049f2edd1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    async function enableNotif() {
+      console.log("hello")
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') return;
+
+      const token = await getToken(messaging, {
+        vapidKey: "BJAh3c5_e-4JbHpgqZPxGpwTUC9Jee-7khgzHFb-83aMAoOiD7jjTHb_BDDcInRbmX_KQUcgBcLeVY69LRZJQdU"
+      });
+      await saveUserData(token, 60);
+
+      console.log("TOKEN:", token);
+    }
+
+    window.enableNotif = enableNotif;
+  </script> -->
+</body>
+</html>
