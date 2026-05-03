@@ -198,7 +198,7 @@
 // }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/Public/sw.js')
+  navigator.serviceWorker.register('/public/sw.js')
     .then(() => console.log('SW registered'))
     .catch(err => console.log(err));
 }
