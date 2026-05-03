@@ -68,9 +68,20 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
+// self.addEventListener('fetch', (event) => {
+//   event.respondWith(fetch(event.request));
+// });
+
 self.addEventListener('fetch', (event) => {
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    caches.match(event.request).then((res) => {
+      return res || fetch(event.request);
+    }).catch(() => {
+      return new Response("Offline");
+    })
+  );
 });
+
 
 // ── RECEIVE MESSAGE FROM APP ──
 self.addEventListener('message', (event) => {
